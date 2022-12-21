@@ -1,7 +1,5 @@
 import { fetch } from 'cross-fetch';
 
-import tokenlist from './../tokens/solana.tokenlist.json';
-
 export enum ENV {
   MainnetBeta = 101,
   Testnet = 102,
@@ -92,13 +90,12 @@ const queryJsonFiles = async (files: string[]) => {
     files.map(async (repo) => {
       try {
         const response = await fetch(repo);
-        const json = (await response.json()) as TokenList;
-        return json;
+        return (await response.json()) as TokenList;
       } catch {
         console.info(
           `@solana/token-registry: falling back to static repository.`
         );
-        return tokenlist;
+        return undefined;
       }
     })
   )) as TokenList[];
@@ -110,21 +107,13 @@ const queryJsonFiles = async (files: string[]) => {
 
 export enum Strategy {
   GitHub = 'GitHub',
-  Static = 'Static',
   Solana = 'Solana',
   CDN = 'CDN',
-}
-
-export class StaticTokenListResolutionStrategy {
-  resolve = () => {
-    return tokenlist.tokens || [];
-  };
 }
 
 export class TokenListProvider {
   static strategies = {
     [Strategy.GitHub]: new GitHubTokenListResolutionStrategy(),
-    [Strategy.Static]: new StaticTokenListResolutionStrategy(),
     [Strategy.Solana]: new SolanaTokenListResolutionStrategy(),
     [Strategy.CDN]: new CDNTokenListResolutionStrategy(),
   };

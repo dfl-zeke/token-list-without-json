@@ -7,11 +7,11 @@ import {
   ENV,
   Strategy,
   TokenInfo,
-  TokenListProvider,
+  TokenListProvider
 } from './tokenlist';
 
 test('Token list is filterable by a tag', async (t) => {
-  const list = (await new TokenListProvider().resolve(Strategy.Static))
+  const list = (await new TokenListProvider().resolve(Strategy.CDN))
     .filterByChainId(ENV.MainnetBeta)
     .filterByTag('nft')
     .getList();
@@ -20,7 +20,7 @@ test('Token list is filterable by a tag', async (t) => {
 });
 
 test('Token list can exclude by a tag', async (t) => {
-  const list = (await new TokenListProvider().resolve(Strategy.Static))
+  const list = (await new TokenListProvider().resolve(Strategy.CDN))
     .filterByChainId(ENV.MainnetBeta)
     .excludeByTag('nft')
     .getList();
@@ -29,7 +29,7 @@ test('Token list can exclude by a tag', async (t) => {
 });
 
 test('Token list can exclude by a chain', async (t) => {
-  const list = (await new TokenListProvider().resolve(Strategy.Static))
+  const list = (await new TokenListProvider().resolve(Strategy.CDN))
     .excludeByChainId(ENV.MainnetBeta)
     .getList();
 
@@ -37,21 +37,21 @@ test('Token list can exclude by a chain', async (t) => {
 });
 
 test('Token list returns new object upon filter', async (t) => {
-  const list = await new TokenListProvider().resolve(Strategy.Static);
+  const list = await new TokenListProvider().resolve(Strategy.CDN);
   const filtered = list.filterByChainId(ENV.MainnetBeta);
   t.true(list !== filtered);
   t.true(list.getList().length !== filtered.getList().length);
 });
 
 test('Token list throws error when calling filterByClusterSlug with slug that does not exist', async (t) => {
-  const list = await new TokenListProvider().resolve(Strategy.Static);
+  const list = await new TokenListProvider().resolve(Strategy.CDN);
   const error = await t.throwsAsync(
     async () => list.filterByClusterSlug('whoop'),
     { instanceOf: Error }
   );
   t.is(
     error.message,
-    `Unknown slug: whoop, please use one of ${Object.keys(CLUSTER_SLUGS)}`
+    `Unknown slug: whoop, please use one of ${ Object.keys(CLUSTER_SLUGS) }`
   );
 });
 
@@ -65,7 +65,7 @@ test('Token list is a valid json', async (t) => {
 });
 
 test('Token list does not have duplicate entries', async (t) => {
-  const list = await new TokenListProvider().resolve(Strategy.Static);
+  const list = await new TokenListProvider().resolve(Strategy.CDN);
   list
     .filterByChainId(ENV.MainnetBeta)
     .getList()
